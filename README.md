@@ -8,4 +8,8 @@ Da die Dimensionen gleich zu beginn auf Bildschirmgröße eingestellt werden, is
 
 # Task 2
 
+In der config.config-Datei können die Werte für den Fitts's Law Test angepasst werden. Hierfür werden max und min Werrte für die Distanz zwischen den Zielen und die Größe der Ziele angegeben. Die Anzahl der Versuche kann ebenfalls angepasst werden.
+
+Aus den Distanzen und Größen werden dann zufällige Kombinationen generiert (mit Seed, damit jeder Tester die gleichen Kombinationen bekommt). Dies verhindert repetitive Muster.
+
 # Task 3
