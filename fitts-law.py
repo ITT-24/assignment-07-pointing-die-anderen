@@ -59,7 +59,7 @@ class FittsLaw():
         # Create a meshgrid and reshape it to get all combinations of distances and sizes
         self.target_parameters = np.array(np.meshgrid(self.target_distances, self.target_sizes)).T.reshape(-1, 2)
 
-        self.indexes = np.random.choice(list(range(len(self.target_parameters))), size=5, replace=False)
+        self.indexes = np.random.choice(list(range(len(self.target_parameters))), size=config["num_trials"], replace=False)
         self.targets = []
         self.round = 0
         self.round_time = 0
@@ -145,13 +145,11 @@ last_move = time.time()
 @window.event
 def on_mouse_motion(x, y, dx, dy):
     global last_move
-    # Achtung! x und y sind koordinaten im Fenster, nicht auf dem Bildschirm, daher muss
-    # die Mausposition korrekt gemapped werden
-    window_x, window_y = window.get_location()
     if time.time() - last_move < LATENT:
-        mouse.position = (mouse.position[0]-dx, mouse.position[1]-dy)
+        # simulate latency by moving the mouse back to the previous position unless the latency has passed
+        # but due to it not putting the mouse position instantly, the moouse flickers a lot, and not really "lags"
+        mouse.position = (mouse.position[0] - dx, mouse.position[1] + dy)
         return
-
     last_move = time.time()
 
 @window.event
