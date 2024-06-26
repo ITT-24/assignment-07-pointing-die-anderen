@@ -3,10 +3,10 @@ import os
 import pyglet
 import math
 import time
-from itertools import combinations
-from itertools import permutations
 import random
 import numpy as np
+from pynput.mouse import Controller, Listener
+import time
 
 # get system arguments
 args = sys.argv
@@ -18,9 +18,11 @@ if len(args) != 6:
 
 USER_ID = args[1]
 DEVICE = args[2]
-LATENT = args[3]
+LATENT = float(args[3])
 config_file = args[4]
 OUTPUT_FILE = args[5]
+
+mouse = Controller()
 
 config = {}
 with open(config_file, 'r') as file:
@@ -51,8 +53,8 @@ class Target():
 
 class FittsLaw():
     def __init__(self):
-        self.target_distances = np.linspace(config["starting_target_distance"], config["ending_target_distance"], config["num_trials"])
-        self.target_sizes = np.linspace(config["starting_target_size"], config["ending_target_size"], config["num_trials"])
+        self.target_distances = np.linspace(config["min_target_distance"], config["max_target_distance"], config["num_trials"])
+        self.target_sizes = np.linspace(config["max_target_size"], config["min_target_size"], config["num_trials"])
 
         # Create a meshgrid and reshape it to get all combinations of distances and sizes
         self.target_parameters = np.array(np.meshgrid(self.target_distances, self.target_sizes)).T.reshape(-1, 2)
@@ -64,13 +66,13 @@ class FittsLaw():
         self.clicks = []
         self.round_clicks = []
         self.start_time = time.time()
-        self.index_of_difficulty = math.log2(2*config["starting_target_distance"] / config["starting_target_size"])
+        self.index_of_difficulty = math.log2(2*config["min_target_distance"] / config["max_target_size"])
 
     def next_round(self):
         if self.round == config["num_trials"]:
             with open(OUTPUT_FILE, 'w') as file:
                 for stat in stats:
-                    file.write(f"{stat[0]},{stat[1]},{stat[2]},{stat[3]},{stat[4]},{stat[5]},{stat[6]}\n")
+                    file.write(f"{stat[0]},{stat[1]},{stat[2]},{stat[3]},{stat[4]},{stat[5]},{stat[6]},{stat[7]}\n")
             pyglet.app.exit()
             window.close()
         else:
@@ -81,6 +83,7 @@ class FittsLaw():
             self.create_targets()
             self.targets[-1].next_target = True
             self.start_time = time.time()
+            self.index_of_difficulty = math.log2(2*self.target_parameters[self.indexes[self.round-1]][0] / self.target_parameters[self.indexes[self.round-1]][1])
 
     def click(self, x, y):
         self.clicks.append((x, y))
@@ -112,7 +115,6 @@ class FittsLaw():
 
         angle_step = 2 * math.pi / num_targets
         target_distance, target_size = self.target_parameters[self.indexes[self.round-1]]
-        print(self.indexes)
 
         for i in range(num_targets):
             angle = angle_step * i
@@ -137,6 +139,21 @@ class FittsLaw():
 
 
 law_test = FittsLaw()
+
+last_move = time.time()
+
+@window.event
+def on_mouse_motion(x, y, dx, dy):
+    global last_move
+    # Achtung! x und y sind koordinaten im Fenster, nicht auf dem Bildschirm, daher muss
+    # die Mausposition korrekt gemapped werden
+    window_x, window_y = window.get_location()
+    if time.time() - last_move < LATENT:
+        mouse.position = (mouse.position[0]-dx, mouse.position[1]-dy)
+        return
+
+    mouse.position = (window_x +x, window_y + WINDOW_HEIGHT-y)
+    last_move = time.time()
 
 @window.event
 def on_mouse_press(x, y, _button, _modifiers):
