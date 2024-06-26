@@ -99,12 +99,14 @@ class FittsLaw():
         # - Width of Target (constant)
         # - Distance from Target to Target (constant)
         # - Index of Difficulty
-
-        stats.append([len(self.clicks), USER_ID, DEVICE, LATENT,self.round_time, target_distance, target_size, self.index_of_difficulty])
         
-        self.start_time = time.time()
+        for target in self.targets:
+            if math.sqrt((target.x - x)**2 + (target.y - y)**2) < target.diameter/2 and target.next_target:
+                stats.append([len(self.clicks), USER_ID, DEVICE, LATENT, self.round_time, target_distance, target_size, self.index_of_difficulty])
+                self.start_time = time.time()
   
-        self.next_target()
+                self.next_target()
+                break
 
         if len(self.round_clicks) >= config["target_num"]:
             self.next_round()
@@ -169,8 +171,7 @@ def on_draw():
         law_test.targets[-1].next_target = True
     law_test.draw_targets()
     law_test.round_time = time.time() - law_test.start_time
-    pyglet.text.Label(f"Rounds: {law_test.round} / {config["num_trials"]} ", x=10, y=WINDOW_HEIGHT-20).draw()#
-    pyglet.text.Label(f"Time: {law_test.round_time} ", x=10, y=WINDOW_HEIGHT-60).draw()
-
+    pyglet.text.Label(f'Rounds: {law_test.round} / {config['num_trials']} ', x=10, y=WINDOW_HEIGHT-20).draw()#
+    pyglet.text.Label(f'Time: {law_test.round_time} ', x=10, y=WINDOW_HEIGHT-60).draw()
 
 pyglet.app.run()
