@@ -152,7 +152,6 @@ def on_mouse_motion(x, y, dx, dy):
         mouse.position = (mouse.position[0]-dx, mouse.position[1]-dy)
         return
 
-    mouse.position = (window_x +x, window_y + WINDOW_HEIGHT-y)
     last_move = time.time()
 
 @window.event
