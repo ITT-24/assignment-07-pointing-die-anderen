@@ -35,6 +35,8 @@ with open(config_file, 'r') as file:
         # Trim whitespace and convert value to integer
         config[key.strip()] = int(value.strip())
 
+NUM_OF_ROUNDS = (config["num_trials"]**2)*3
+
 stats = []
 random.seed(42)
 np.random.seed(42)
@@ -72,11 +74,11 @@ class FittsLaw():
 
     def next_round(self):
         self.round += 1
-        if self.round == (config["num_trials"]**2)*3:
+        if self.round == NUM_OF_ROUNDS:
             with open(OUTPUT_FILE, 'w') as file:
                 for i in range(len(stats)):
                     stat = stats[i]
-                    file.write(f"{stat[0]},{stat[1]},{stat[2]},{stat[3]},{stat[4]},{stat[5]},{stat[6]},{stat[7]}\n")
+                    file.write(f"{stat[0]},{stat[1]},{stat[2]},{stat[3]},{stat[4]},{stat[5]},{stat[6]},{stat[7]},{stat[8]}\n")
             pyglet.app.exit()
             window.close()
         else:
@@ -110,7 +112,7 @@ class FittsLaw():
                 self.clicks.append((x, y))
                 self.round_clicks.append((x, y))
                 if len(self.round_clicks) != 1:
-                    stats.append([len(self.clicks), USER_ID, DEVICE, LATENT, self.round_time, target_distance, target_size, self.index_of_difficulty])
+                    stats.append([len(self.clicks), USER_ID, DEVICE, LATENT, self.round_time, time.time(), target_distance, target_size, self.index_of_difficulty])
                 self.start_time = time.time()
   
                 self.next_target()
@@ -191,7 +193,7 @@ def on_mouse_motion(x, y, dx, dy):
 def on_mouse_press(x, y, _button, _modifiers):
     global law_test
     print(f"round: {law_test.round}")
-    if law_test.round != (config["num_trials"]**2)*3+1:
+    if law_test.round != NUM_OF_ROUNDS+1:
         law_test.click(x, y)
 
 start_time = time.time()
