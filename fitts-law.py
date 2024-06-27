@@ -86,6 +86,8 @@ class FittsLaw():
             self.round_clicks = []
             self.create_targets()
             self.targets[-1].next_target = True
+            for i in range(self.round):
+                self.next_target()
             self.start_time = time.time()
             self.index_of_difficulty = math.log2(2*self.target_parameters[self.indexes[(self.round)% len(self.indexes)]][0] / self.target_parameters[self.indexes[(self.round)% len(self.indexes)]][1])
 
@@ -204,9 +206,10 @@ def on_draw():
     window.clear()        
     law_test.draw_targets()
     law_test.round_time = time.time() - law_test.start_time
-    pyglet.text.Label(f'Rounds: {law_test.round+1} / {config['num_trials']} ', x=10, y=WINDOW_HEIGHT-20).draw()#
-    pyglet.text.Label(f'Time: {law_test.round_time} ', x=10, y=WINDOW_HEIGHT-60).draw()
+    #pyglet.text.Label(f'Rounds: {law_test.round+1} / {(config['num_trials']**2)*3} ', x=10, y=WINDOW_HEIGHT-20).draw()#
+    #pyglet.text.Label(f'Time: {law_test.round_time} ', x=10, y=WINDOW_HEIGHT-60).draw()
     mouse_cursor.draw()
 
 window.set_mouse_visible(False)
+window.set_fullscreen(True)
 pyglet.app.run()
