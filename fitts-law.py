@@ -82,7 +82,7 @@ class FittsLaw():
             pyglet.app.exit()
             window.close()
         else:
-            print(self.round % config["num_trials"])
+            #print(self.round % config["num_trials"])
             self.round_time = 0
 
             self.round_clicks = []
@@ -94,9 +94,9 @@ class FittsLaw():
             self.index_of_difficulty = math.log2(2*self.target_parameters[self.indexes[(self.round)% len(self.indexes)]][0] / self.target_parameters[self.indexes[(self.round)% len(self.indexes)]][1])
 
     def click(self, x, y):
-        print(f"target_parameters: {self.round}")
+        #print(f"target_parameters: {self.round}")
         target_distance, target_size = self.target_parameters[self.indexes[(self.round)% len(self.indexes)]]
-        print(target_distance, target_size)
+        #print(target_distance, target_size)
         # To be logged:
         # - Number of Clicks as ID
         # - User ID
@@ -192,7 +192,7 @@ def on_mouse_motion(x, y, dx, dy):
 @window.event
 def on_mouse_press(x, y, _button, _modifiers):
     global law_test
-    print(f"round: {law_test.round}")
+    #print(f"round: {law_test.round}")
     if law_test.round != NUM_OF_ROUNDS+1:
         law_test.click(x, y)
 
