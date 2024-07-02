@@ -13,3 +13,5 @@ In der config.config-Datei können die Werte für den Fitts's Law Test angepasst
 Aus den Distanzen und Größen werden dann zufällige Kombinationen generiert (mit Seed, damit jeder Tester die gleichen Kombinationen bekommt). Dies verhindert repetitive Muster.
 
 # Task 3
+
+(siehe Notebook study.ipynb)
